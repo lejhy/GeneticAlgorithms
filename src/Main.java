@@ -18,9 +18,12 @@ public class Main {
         System.out.println("Input a population size: \n");
         int populationSize = scanner.nextInt();
 
+        System.out.println("Input a population multiplier: \n");
+        int populationMultiplier = scanner.nextInt();
+
         String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         GeneticAlgorithm algorithm = new GeneticAlgorithm(new UniformCrossover(), new RandomResettingMutation(), new FitnessBasedSelection(), new ExactMatchFitness(solution));
-        Problem problem = new Problem(solution.length(), populationSize, charSet, algorithm);
+        Problem problem = new Problem(solution.length(), populationSize, populationMultiplier, charSet, algorithm);
 
         System.out.println("Input a search depth: \n");
         int searchDepth = scanner.nextInt();
@@ -32,13 +35,18 @@ public class Main {
         }
 
         // Highest integer value
-        System.out.println("10 character String to max int ("+Integer.MAX_VALUE+")problem: \n");
+        System.out.println("String to max int ("+Integer.MAX_VALUE+")problem: \n");
+        System.out.println("Input a number of characters in a solution");
+        int solutionLenghth = scanner.nextInt();
 
         System.out.println("Input a population size: \n");
         populationSize = scanner.nextInt();
 
+        System.out.println("Input a population multiplier: \n");
+        populationMultiplier = scanner.nextInt();
+
         algorithm = new GeneticAlgorithm(new UniformCrossover(), new RandomResettingMutation(), new FitnessBasedSelection(), new IntegerBasedFitness());
-        problem = new Problem(10, populationSize, charSet, algorithm);
+        problem = new Problem(solutionLenghth, populationSize, populationMultiplier, charSet, algorithm);
 
         System.out.println("Input a search depth: \n");
         searchDepth = scanner.nextInt();

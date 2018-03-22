@@ -19,8 +19,8 @@ public class GeneticAlgorithm {
         this.fitness = fitness;
     }
 
-    public List<String> crossover(List<String> population) {
-        return crossover.filter(population);
+    public List<String> crossover(List<String> population, int generationMultiplier) {
+        return crossover.filter(population, generationMultiplier);
     }
 
     public List<String> mutation(List<String> population, String charSet) {

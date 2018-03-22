@@ -4,6 +4,7 @@ import java.util.*;
 public class Problem {
     private int solutionLength;
     private int populationSize;
+    private int generationMultiplier;
     private String charSet;
     private List<String> initialPopulation;
 
@@ -12,9 +13,10 @@ public class Problem {
 
     private GeneticAlgorithm algorithm;
 
-    public Problem (int solutionLength, int populationSize, String charSet, GeneticAlgorithm algorithm) {
+    public Problem (int solutionLength, int populationSize, int generationMultiplier, String charSet, GeneticAlgorithm algorithm) {
         this.solutionLength = solutionLength;
         this.populationSize = populationSize;
+        this.generationMultiplier = generationMultiplier;
         this.charSet = charSet;
         initialPopulation = new ArrayList<>();
         generator = new RandomStringGenerator(charSet);
@@ -29,7 +31,7 @@ public class Problem {
         List<String> population = initialPopulation;
 
         for (int i = 0; i < searchDepth; i++) {
-            population.addAll(algorithm.crossover(population));
+            population.addAll(algorithm.crossover(population, generationMultiplier));
             population = algorithm.mutation(population, charSet);
             population = algorithm.survivorSelection(population, populationSize);
         }
