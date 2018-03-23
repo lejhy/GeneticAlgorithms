@@ -1,5 +1,6 @@
 import Filters.FitnessBasedSelection;
 import Filters.RandomResettingMutation;
+import Filters.TwoHalvesCrossover;
 import Filters.UniformCrossover;
 import Fitness.*;
 
@@ -22,7 +23,7 @@ public class Main {
         int populationMultiplier = scanner.nextInt();
 
         String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        GeneticAlgorithm algorithm = new GeneticAlgorithm(new UniformCrossover(), new RandomResettingMutation(), new FitnessBasedSelection(), new ExactMatchFitness(solution));
+        GeneticAlgorithm algorithm = new GeneticAlgorithm(new TwoHalvesCrossover(), new RandomResettingMutation(), new FitnessBasedSelection(), new ExactMatchFitness(solution));
         Problem problem = new Problem(solution.length(), populationSize, populationMultiplier, charSet, algorithm);
 
         System.out.println("Input a search depth: \n");
@@ -30,12 +31,15 @@ public class Main {
 
         List<String> results = problem.solve(searchDepth);
         System.out.println("Results:");
+        double resultTotal = 0;
         for (String result : results) {
+        	resultTotal += algorithm.fitness(result);
             System.out.println(result + " --- " + algorithm.fitness(result));
         }
+        System.out.println("Average Fitness Value: " + resultTotal/results.size());
 
         // Highest integer value
-        System.out.println("String to max int ("+Integer.MAX_VALUE+")problem: \n");
+        System.out.println("\nString to max int ("+Integer.MAX_VALUE+")problem: \n");
         System.out.println("Input a number of characters in a solution");
         int solutionLenghth = scanner.nextInt();
 

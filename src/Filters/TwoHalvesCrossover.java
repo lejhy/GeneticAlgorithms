@@ -41,7 +41,6 @@ public class TwoHalvesCrossover implements CrossoverFilter{
 			result += parent2.substring(0, (stringLength/2));
 			result += parent1.substring((stringLength/2), stringLength);
 		}
-        System.out.println(parent1 + " + " + parent2 + " = " + result);
         return result;
 	}
 }
