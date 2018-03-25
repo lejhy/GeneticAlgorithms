@@ -1,7 +1,4 @@
-import Filters.FitnessBasedSelection;
-import Filters.RandomResettingMutation;
-import Filters.TwoHalvesCrossover;
-import Filters.UniformCrossover;
+import Filters.*;
 import Fitness.*;
 
 import java.util.List;
@@ -9,12 +6,66 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        // String matching
-        System.out.println("Input a solution: \n");
-        String solution = scanner.nextLine();
+        System.out.println("Select a fitness filter:");
+        System.out.println("(0) ExactMatchFitness");
+        System.out.println("(1) IntegerBasedFitness");
+        int fitnessFilterIndex = scanner.nextInt();
+        scanner.nextLine();
+        int solutionLength;
+        Fitness fitnessFilter;
+        switch (fitnessFilterIndex) {
+            case 0:
+                System.out.println("Input a solution: \n");
+                String solution = scanner.nextLine();
+                solutionLength = solution.length();
+                fitnessFilter = new ExactMatchFitness(solution);
+                break;
+            case 1:
+                System.out.println("Solution is: "+ Integer.MAX_VALUE );
+                System.out.println("Input a number of characters in a solution");
+                solutionLength = scanner.nextInt();
+                fitnessFilter = new IntegerBasedFitness();
+                break;
+            default:
+                throw new Exception("Invalid input");
+        }
+
+        System.out.println("Select crossover filter:");
+        System.out.println("(0) UniformCrossover");
+        System.out.println("(1) TwoHalvesCrossover");
+        int crossoverFilterIndex = scanner.nextInt();
+        scanner.nextLine();
+        CrossoverFilter crossoverFilter;
+        switch (crossoverFilterIndex) {
+            case 0:
+                crossoverFilter = new UniformCrossover();
+                break;
+            case 1:
+                crossoverFilter = new TwoHalvesCrossover();
+                break;
+            default:
+                throw new Exception("Invalid input");
+        }
+
+        System.out.println("Select mutation filter:");
+        System.out.println("(0) RandomResettingMutation");
+        System.out.println("(1) ScrambleMutation");
+        int mutationFilterIndex = scanner.nextInt();
+        scanner.nextLine();
+        MutationFilter mutationFilter;
+        switch (mutationFilterIndex) {
+            case 0:
+                mutationFilter = new RandomResettingMutation();
+                break;
+            case 1:
+                mutationFilter = new ScrambleMutation();
+                break;
+            default:
+                throw new Exception("Invalid input");
+        }
 
         System.out.println("Input a population size: \n");
         int populationSize = scanner.nextInt();
@@ -23,8 +74,8 @@ public class Main {
         int populationMultiplier = scanner.nextInt();
 
         String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        GeneticAlgorithm algorithm = new GeneticAlgorithm(new TwoHalvesCrossover(), new RandomResettingMutation(), new FitnessBasedSelection(), new ExactMatchFitness(solution));
-        Problem problem = new Problem(solution.length(), populationSize, populationMultiplier, charSet, algorithm);
+        GeneticAlgorithm algorithm = new GeneticAlgorithm(crossoverFilter, mutationFilter, new FitnessBasedSelection(), fitnessFilter);
+        Problem problem = new Problem(solutionLength, populationSize, populationMultiplier, charSet, algorithm);
 
         System.out.println("Input a search depth: \n");
         int searchDepth = scanner.nextInt();
@@ -41,31 +92,6 @@ public class Main {
         }
 
         System.out.println("\nMaximum Fitness Value: " + resultTotalFitness/results.size());
-        System.out.println("\nAverage Fitness Value: " + resultTotalFitness/results.size());
-
-        // Highest integer value
-        System.out.println("\nString to max int ("+Integer.MAX_VALUE+")problem: \n");
-        System.out.println("Input a number of characters in a solution");
-        int solutionLenghth = scanner.nextInt();
-
-        System.out.println("Input a population size: \n");
-        populationSize = scanner.nextInt();
-
-        System.out.println("Input a population multiplier: \n");
-        populationMultiplier = scanner.nextInt();
-
-        algorithm = new GeneticAlgorithm(new UniformCrossover(), new RandomResettingMutation(), new FitnessBasedSelection(), new IntegerBasedFitness());
-        problem = new Problem(solutionLenghth, populationSize, populationMultiplier, charSet, algorithm);
-
-        System.out.println("Input a search depth: \n");
-        searchDepth = scanner.nextInt();
-
-        results = problem.solve(searchDepth);
-        System.out.println("Results:");
-        for (String result : results) {
-            System.out.println(result + " --- " + algorithm.fitness(result));
-        }
-
-
+        System.out.println("Average Fitness Value: " + resultTotalFitness/results.size());
     }
 }
