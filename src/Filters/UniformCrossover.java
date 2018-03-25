@@ -14,16 +14,38 @@ public class UniformCrossover implements CrossoverFilter {
     }
 
     public List<String> filter(List<String> population, int multiplier) {
-        List<String> offsprings = new ArrayList<>();
-        int parentIndex;
-        for (int i = 0; i < population.size()*multiplier; i++) {
-            parentIndex = random.nextInt(population.size());
-            String parent1 = population.get(parentIndex);
-            parentIndex = random.nextInt(population.size());
-            String parent2 = population.get(parentIndex);
-            String offspring = crossover(parent1, parent2);
-            offsprings.add(offspring);
+
+        // Concurrency code
+        List <String> offsprings = Collections.synchronizedList(new ArrayList<>());
+        int threadCount = 4;
+        List<Thread> threads = new ArrayList<>();
+        int populationPerThread = population.size()/threadCount;
+        int populationOfLastThread = populationPerThread + population.size()%threadCount;
+        for (int i = 0; i < threadCount; i++) {
+            final int populationOfCurrentThread = i == (threadCount - 1) ? populationOfLastThread : populationPerThread;
+            Thread thread = new Thread(() -> {
+                for (int j = 0; j < populationOfCurrentThread*multiplier; j++) {
+                    int firstParentIndex = random.nextInt(population.size());
+                    String firstParent = population.get(firstParentIndex);
+                    int secondParentIndex = random.nextInt(population.size());
+                    String secondParent = population.get(secondParentIndex);
+                    String offspring = crossover(firstParent, secondParent);
+                    offsprings.add(offspring);
+                }
+            });
+            thread.start();
+            threads.add(thread);
         }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                System.out.println("The thread joining was interrupted! Results could be inconsistent...");
+                e.printStackTrace();
+            }
+        }
+        // End of concurrency code
+
         return offsprings;
     }
 

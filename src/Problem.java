@@ -18,11 +18,35 @@ public class Problem {
         this.populationSize = populationSize;
         this.generationMultiplier = generationMultiplier;
         this.charSet = charSet;
-        initialPopulation = new ArrayList<>();
         generator = new RandomStringGenerator(charSet);
-        for (int i = 0; i < populationSize; i++) {
-            initialPopulation.add(generator.getString(solutionLength));
+
+        // Concurrency code
+        initialPopulation = Collections.synchronizedList(new ArrayList<>());
+        int threadCount = 4;
+        List<Thread> threads = new ArrayList<>();
+        int populationPerThread = populationSize/threadCount;
+        int populationOfLastThread = populationPerThread + populationSize%threadCount;
+        for (int i = 0; i < threadCount; i++) {
+            final int populationOfCurrentThread = i == (threadCount - 1) ? populationOfLastThread : populationPerThread;
+            Thread thread = new Thread(() -> {
+                for (int j = 0; j < populationOfCurrentThread; j++) {
+                    String initialParent = generator.getString(solutionLength);
+                    initialPopulation.add(initialParent);
+                }
+            });
+            thread.start();
+            threads.add(thread);
         }
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                System.out.println("The thread joining was interrupted! Results could be inconsistent...");
+                e.printStackTrace();
+            }
+        }
+        // End of concurrency code
+
         random = new Random();
         this.algorithm = algorithm;
     }

@@ -31,12 +31,17 @@ public class Main {
 
         List<String> results = problem.solve(searchDepth);
         System.out.println("Results:");
-        double resultTotal = 0;
+        double resultTotalFitness = 0;
+        int resultMaxFitness = 0;
         for (String result : results) {
-        	resultTotal += algorithm.fitness(result);
-            System.out.println(result + " --- " + algorithm.fitness(result));
+            int resultFitness = algorithm.fitness(result);
+        	resultTotalFitness += resultFitness;
+        	if (resultFitness > resultMaxFitness) resultMaxFitness = resultFitness;
+            System.out.println(result + " --- " + resultFitness);
         }
-        System.out.println("Average Fitness Value: " + resultTotal/results.size());
+
+        System.out.println("\nMaximum Fitness Value: " + resultTotalFitness/results.size());
+        System.out.println("\nAverage Fitness Value: " + resultTotalFitness/results.size());
 
         // Highest integer value
         System.out.println("\nString to max int ("+Integer.MAX_VALUE+")problem: \n");
