@@ -91,7 +91,7 @@ public class Main {
             System.out.println(result + " --- " + resultFitness);
         }
 
-        System.out.println("\nMaximum Fitness Value: " + resultTotalFitness/results.size());
+        System.out.println("\nMaximum Fitness Value: " + resultMaxFitness);
         System.out.println("Average Fitness Value: " + resultTotalFitness/results.size());
     }
 }
